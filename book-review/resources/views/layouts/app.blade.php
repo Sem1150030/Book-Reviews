@@ -1,16 +1,13 @@
-@import 'tailwindcss';
-@source "../views";
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+<!DOCTYPE html>
+<html lang="en">
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-}
+<head>
+  <meta charset="UTF-8">
+  <title>Book Reviews</title>
+  @vite('resources/css/app.css')
 
-
+  {{-- blade-formatter-disable --}}
+  <style type="text/tailwindcss">
     .btn {
       @apply bg-white rounded-md px-4 py-2 text-center font-medium text-slate-500 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50 h-10;
     }
@@ -62,3 +59,12 @@
     .reset-link {
       @apply text-slate-500 underline;
     }
+  </style>
+  {{-- blade-formatter-enable --}}
+</head>
+
+<body class="container mx-auto mt-10 mb-10 max-w-3xl">
+  @yield('content')
+</body>
+
+</html>
