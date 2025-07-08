@@ -23,19 +23,22 @@ class BookController extends Controller
 
         $books = match($filter) {
             'popular_last_month' => $books->popularLastMonth(),
-            'popluar_last_6months' => $books->popularLast6Months(),
+            'popular_last_6months' => $books->popularLast6Months(),
             'highest_rated_last_month' => $books->highestRatedLastMonth(),
-            'highest_rated_6last_months' => $books->highestRatedLast6Months(),
-            default => $books->latest()
+            'highest_rated_last_6months' => $books->highestRatedLast6Months(),
+            default => $books->latest()->withAvgRating()->withReviewsCount()
 
         };
 
         $cashKey = 'books:' . $filter . ':' . $title;
 
-        $books = cache()->remember($cashKey, 3600, function() use($books){
-            dd("Not cashed");
-            return $books->get();
-        });
+        $books =
+        // cache()->remember(
+        //     $cashKey,
+        //      3600,
+        //      function() use($books){
+             $books->get();
+        // });
 
 
 
@@ -61,14 +64,17 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Book $book)
+    public function show(int $id)
     {
-        return view
-        ('books.show',
-         ['book' => $book->load(
-            ['reviews'=> fn($query) => $query->latest()]
-         )]);
+        $cashKey = 'books:' . $id;
+
+        $book = cache()->remember($cashKey, 10, fn() => Book::with([
+            'reviews' => fn($query) => $query->latest()
+        ])->withAvgRating()->withReviewsCount()->findOrFail($id));
+
+        return view('books.show', ['book' => $book]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
